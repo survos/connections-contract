@@ -1,0 +1,25 @@
+{
+    "name": "survos/connections-contract",
+    "description": "Immutable values for a connections view: nodes, edges with source evidence, and per-group paging.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Survos\\ConnectionsContract\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Survos\\ConnectionsContract\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^13.0"
+    },
+    "scripts": {
+        "test": "phpunit --bootstrap tests/bootstrap.php tests"
+    }
+}
