@@ -132,4 +132,36 @@ final class ConnectionGraphTest extends TestCase
 
         self::assertSame('same-as', json_decode(json_encode($edge), true)['kind']);
     }
+
+    public function testLifeYearsKeepPartialAndConflictingKnowledge(): void
+    {
+        $years = static fn (?string $born, ?string $died): string => (new Node('p', 'Person', 'P', $born, $died))->lifeYears();
+
+        self::assertSame('1941–1999', $years('1941-11-14', '1999-02-22'));
+        self::assertSame('1940–1999', $years('1940', '1999-12'));
+        self::assertSame('b. 1940', $years('1940', null));
+        self::assertSame('d. 1999', $years(null, '1999'));
+        self::assertSame('', $years(null, null));
+        self::assertSame('1940 / 1941–1999', $years('1940 / 1940-01-24 / 1941', '1999'));
+        self::assertSame('', $years('Aug. 2', null), 'A date with no year says nothing.');
+        self::assertSame('1949–2026', $years('May 26, 1949', 'November 2, 2026'));
+    }
+
+    public function testKindAndRolesSurviveTheRoundTripAndAreOmittedWhenEmpty(): void
+    {
+        $node = new Node('s', 'Document', 'Hutt Gravestone', kind: 'Stone record', roles: ['Obituary subject', 'Spouse']);
+        $json = json_decode(json_encode($node), true);
+
+        self::assertSame('Stone record', $json['kind']);
+        self::assertSame(['Obituary subject', 'Spouse'], $json['roles']);
+        self::assertEquals($node, Node::fromArray($json));
+        self::assertArrayNotHasKey('roles', json_decode(json_encode(new Node('p', 'Person', 'P')), true));
+        self::assertArrayNotHasKey('kind', json_decode(json_encode(new Node('p', 'Person', 'P')), true));
+    }
+
+    public function testARoleMustBeANonEmptyString(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new Node('p', 'Person', 'P', roles: ['Spouse', '']);
+    }
 }

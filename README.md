@@ -7,6 +7,9 @@ source text behind each connection. It loads nothing, builds no addresses and dr
 The values follow the FtM conventions in `survos/followthemoney` (see its `docs/ecosystem.md`):
 
 - A `Node` is one source-scoped entity (`Person`, `Document`, ...). Two nodes with the same caption stay two nodes.
+  `kind` is the name a reader knows it by when the schema is too general (a `Document` that is a "Stone record"), `roles`
+  say what it is in this view ("Obituary subject", "Spouse", "Pallbearer"), and `lifeYears()` reads the years from the
+  recorded dates (`1941–1999`, `b. 1940`, `1940 / 1941–1999`).
 - An `Edge` is made from an FtM interval entity (`Family`, `Associate`, `Membership`, ...). It keeps that entity's id
   and schema, the relationship as recorded (`child of`), and optionally the reverse label (`parent of`).
 - `Evidence` has the fields of `TextEvidence` (source, exact quote, code-point start and end, sha256, extractor,
